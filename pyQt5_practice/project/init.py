@@ -15,6 +15,10 @@ from mainFuction import MainWindow
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    # 每一个pyqt5应用都必须创建一个对象
     mainwindow = MainWindow()
+    # 创建窗口
     mainwindow.show()
+    # 展示窗口
     sys.exit(app.exec_())
+    # 结束

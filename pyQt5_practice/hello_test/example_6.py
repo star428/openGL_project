@@ -12,9 +12,11 @@
 import random
 import sys
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPainter
-from PyQt5.QtWidgets import QWidget, QApplication,QMainWindow
+from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtGui import QPainter, QPen
+from PyQt5.QtWidgets import QWidget, QApplication, QMainWindow
+
+from time import sleep
 
 
 class Example(QMainWindow):
@@ -25,7 +27,7 @@ class Example(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        self.setGeometry(300, 300, 300, 190)
+        self.setGeometry(300, 300, 500, 500)
         self.setWindowTitle('Points')
         self.show()
 
@@ -36,13 +38,16 @@ class Example(QMainWindow):
         qp.end()
 
     def drawPoints(self, qp):
-        qp.setPen(Qt.red)
+        pen = QPen(Qt.black, 5)
+        qp.setPen(pen)
         size = self.size()
 
-        for i in range(1000):
+        for i in range(10):
             x = random.randint(1, size.width() - 1)
             y = random.randint(1, size.height() - 1)
+
             qp.drawPoint(x, y)
+
 
 
 if __name__ == '__main__':

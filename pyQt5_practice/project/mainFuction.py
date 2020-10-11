@@ -9,6 +9,9 @@
 @time: 2020/9/28 22:19
 @desc:
 """
+# 两个方向，一个是继续寻找暂停，另一个是从matplotlib中重写，由于框架已经就绪
+# 再次重写较为简单
+import time
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QFont
@@ -23,6 +26,9 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
 
         self.position = None
+        self.points = []
+        # 设置标志位此时达到不同算法的切换
+        self.signal = 0
         self.initUI()
         # 直接在主函数中初始化函数
 
@@ -45,36 +51,39 @@ class MainWindow(QMainWindow):
         fileMenu.addAction(BresenhamAct)
 
         # 鼠标控制
-        self.mouseControl()
+        # self.mouseControl()
         # 鼠标控制结束
+
         self.resize(600, 500)
         self.center()
         self.setWindowTitle("draw the graph")
 
-    def mouseControl(self):
-        x = 0
-        y = 0
-
-        self.text = "x: {0},  y: {1}".format(x, y)
-        self.label = QLabel(self.text, self)
-        self.label.move(-100, -100)
-        self.setMouseTracking(True)
-
-    def mouseMoveEvent(self, e):
-        # 重写鼠标事件
-        size = self.size()
-        x = e.x() - size.width() / 2
-        y = size.height() / 2 - e.y()
-
-        text = "x: {0},  y: {1}".format(x, y)
-        self.statusBar().showMessage(text)
+    # def mouseControl(self):
+    #     x = 0
+    #     y = 0
+    #
+    #     self.text = "x: {0},  y: {1}".format(x, y)
+    #     self.label = QLabel(self.text, self)
+    #     self.label.move(-100, -100)
+    #     self.setMouseTracking(True)
+    #
+    # def mouseMoveEvent(self, e):
+    #     重写鼠标事件
+    #     size = self.size()
+    # x = e.x() - size.width() / 2
+    # y = size.height() / 2 - e.y()
+    #
+    # text = "x: {0},  y: {1}".format(x, y)
+    # self.statusBar().showMessage(text)
 
     def paintEvent(self, event):
         # 重写画笔事件
         qp = QPainter()
         qp.begin(self)
         self.drawCoordinate(qp)
-        self.drawDDALine(qp)
+        if self.signal == 1:
+            self.drawDDALine(qp)
+
         qp.end()
 
     def center(self):
@@ -88,14 +97,15 @@ class MainWindow(QMainWindow):
         # 子窗口事件，同时连接了信号槽
         self.childOne = childWindowOne()
         self.childOne.show()
-        self.childOne._signal.connect(self.getMessage)
+        self.childOne._signal.connect(self.getMessageOne)
+        self.signal = 1
 
     def childWindow_two(self):
         self.childTwo = childWindowTwo()
         self.childTwo.show()
 
-    def getMessage(self, x0, y0, xEnd, yEnd):
-        # 加入事件槽
+    def getMessageOne(self, x0, y0, xEnd, yEnd):
+        # 加入第一个事件的事件槽
         self.position = x0, y0, xEnd, yEnd
 
     def drawCoordinate(self, qp):
@@ -137,19 +147,51 @@ class MainWindow(QMainWindow):
             qp.drawLine(x, y - yInc, x + 5, y - yInc)
 
     def drawDDALine(self, qp):
-        pen = QPen(Qt.black, 10, Qt.SolidLine)
+        pen = QPen(Qt.black, 2, Qt.SolidLine)
         qp.setPen(pen)
         size = self.size()
 
         if self.position is not None:
-            DDALine(qp, self.position, size)
+            self.points = DDALine(self.position, size)
+            for point in self.points:
+                qp.drawPoint(point[0], point[1])
+            # self.position = None
 
-
+# 下面定义为外置代码
 def changeCoordinate(position, windowSize):
     return (position[0] + windowSize.width() / 2,
             windowSize.height() / 2 - position[1])
 
 
-def DDALine(qp, position, windowSize):
-    x, y = changeCoordinate(position, windowSize)
-    qp.drawPoint(x, y)
+def round(num):
+    return int(num + 0.5)
+
+
+def DDALine(position, windowSize):
+    # x, y = changeCoordinate(position, windowSize)
+    # qp.drawPoint(x, y)
+    points = []
+    dx = abs(position[0] - position[2])
+    dy = abs(position[1] - position[3])
+
+    x = position[0]
+    y = position[1]
+
+    if dx > dy:
+        steps = int(dx)
+    else:
+        steps = int(dy)
+
+    x_increase = dx / steps
+    y_increase = dy / steps
+
+    out_x, out_y = changeCoordinate((x, y), windowSize)
+    points.append((out_x, out_y))
+    for step in range(steps):
+        x += x_increase
+        y += y_increase
+
+        out_x, out_y = changeCoordinate((x, y), windowSize)
+        points.append((out_x, out_y))
+
+    return points

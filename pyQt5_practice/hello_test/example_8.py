@@ -16,49 +16,33 @@ from PyQt5.Qt import *
 class Window(QWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.setWindowTitle('动画组')
+        self.setWindowTitle('动画')
         self.resize(500, 500)
         self.move(400, 200)
-        self.btn1 = QPushButton(self)
-        self.btn2 = QPushButton(self)
+        self.btn = QPushButton(self)
         self.init_ui()
 
     def init_ui(self):
-        self.btn1.resize(50, 50)
-        self.btn1.move(0, 0)
-        self.btn1.setStyleSheet('QPushButton{border: none; background: pink;}')
+        self.btn.resize(10, 10)
+        self.btn.move(0, 0)
+        self.btn.setStyleSheet('QPushButton{border: none; background: black;}')
 
-        self.btn2.resize(50, 50)
-        self.btn2.move(50, 50)
-        self.btn2.setStyleSheet('border: none; background: cyan')
+        # 1.定义一个动画
+        animation = QPropertyAnimation(self)
+        animation.setTargetObject(self.btn)
+        animation.setPropertyName(b'pos')
+        # 使用另外一种构造函数方式创建
+        # animation = QPropertyAnimation(self.btn, b'pos', self)
 
-        # 按钮1的动画
-        animation1 = QPropertyAnimation(self.btn1, b'pos', self)
-        animation1.setKeyValueAt(0, QPoint(0, 0))
-        animation1.setKeyValueAt(0.25, QPoint(450, 0))
-        animation1.setKeyValueAt(0.5, QPoint(450, 450))
-        animation1.setKeyValueAt(0.75, QPoint(0, 450))
-        animation1.setKeyValueAt(1, QPoint(0, 0))
-        animation1.setDuration(5000)
-        # animation1.start()
+        # 2.设置属性值
+        animation.setStartValue(QPoint(0, 0))
+        animation.setEndValue(QPoint(400, 400))
 
-        # 按钮2的动画
-        animation2 = QPropertyAnimation(self.btn2, b'pos', self)
-        animation2.setKeyValueAt(0, QPoint(50, 50))
-        animation2.setKeyValueAt(0.25, QPoint(400, 50))
-        animation2.setKeyValueAt(0.5, QPoint(400, 400))
-        animation2.setKeyValueAt(0.75, QPoint(50, 400))
-        animation2.setKeyValueAt(1, QPoint(50, 50))
-        animation2.setDuration(8000)
-        # animation2.start()
+        # 3.设置时长
+        animation.setDuration(30000)
 
-        animation_group = QParallelAnimationGroup(self)
-        animation_group.addAnimation(animation1)
-        animation_group.addAnimation(animation2)
-        animation_group.start()
-
-        self.btn1.clicked.connect(animation_group.pause)
-        self.btn2.clicked.connect(animation_group.resume)
+        # 4.启动动画
+        animation.start()
 
 
 if __name__ == "__main__":
@@ -66,4 +50,3 @@ if __name__ == "__main__":
     window = Window()
     window.show()
     sys.exit(app.exec_())
-

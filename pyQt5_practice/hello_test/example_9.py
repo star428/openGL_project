@@ -19,7 +19,8 @@ from pylab import *
 
 mpl.rcParams['font.sans-serif'] = ['SimHei']
 mpl.rcParams['axes.unicode_minus'] = False
-# 使用 matplotlib中的FigureCanvas (在使用 Qt5 Backends中 FigureCanvas继承自QtWidgets.QWidget)
+# 使用 matplotlib中的FigureCanvas (在使用 Qt5 Backends中
+# FigureCanvas继承自QtWidgets.QWidget)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from PyQt5.QtWidgets import QWidget, QPushButton, QApplication
 from PyQt5.QtCore import QTimer
@@ -79,7 +80,7 @@ class App(QWidget):
     # 启动函数
     def startTimer(self):
         # 设置计时间隔并启动
-        self.timer.start(100)  # 每隔一秒执行一次绘图函数 showTime
+        self.timer.start(1000)  # 每隔一秒执行一次绘图函数 showTime
         self.startBtn.setEnabled(False)  # 开始按钮变为禁用
         self.endBtn.setEnabled(True)  # 结束按钮变为可用
 

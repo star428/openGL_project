@@ -80,7 +80,7 @@ class MainWindow(QMainWindow):
         # 刷新控制
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.repaint)
-        self.timer.start(25)
+        self.timer.start(10)
         # 刷新控制结束，控制秒数为1秒，上面的单位是毫秒计时
 
         self.resize(800, 600)

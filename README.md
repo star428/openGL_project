@@ -1,4 +1,12 @@
-# openGL_project
+# OpenGL Project
+## Ye Wang
+
+
+
+### data 2020-10
+
+#### Ye Wang
+
 learn openGL using python
 
 * new idea:
@@ -17,3 +25,11 @@ learn openGL using python
 
 故此时保留原文件,此时取新的文件来开展new idea,同时采用原idea的框架,虽然这是
 一件令人失望的事情
+
+
+
+### data 2020-11-08
+
+#### Jiahong Ma
+
+* 加入了椭圆算法的实现
